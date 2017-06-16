@@ -5,6 +5,10 @@ VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyScoreTennis", "MyScoreTennis\MyScoreTennis.csproj", "{52333D8B-DD1D-4CB1-85B8-832925D07091}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyScoreTennisEntity", "MyScoreTennisEntity\MyScoreTennisEntity.csproj", "{C795047C-A801-438D-B3E8-F590EF65A32F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyScoreTennisConsole", "MyScoreTennisConsole\MyScoreTennisConsole.csproj", "{98EFE9BA-EA3A-4E19-81D6-56438ABAA80E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{52333D8B-DD1D-4CB1-85B8-832925D07091}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{52333D8B-DD1D-4CB1-85B8-832925D07091}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{52333D8B-DD1D-4CB1-85B8-832925D07091}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C795047C-A801-438D-B3E8-F590EF65A32F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C795047C-A801-438D-B3E8-F590EF65A32F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C795047C-A801-438D-B3E8-F590EF65A32F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C795047C-A801-438D-B3E8-F590EF65A32F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{98EFE9BA-EA3A-4E19-81D6-56438ABAA80E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{98EFE9BA-EA3A-4E19-81D6-56438ABAA80E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{98EFE9BA-EA3A-4E19-81D6-56438ABAA80E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{98EFE9BA-EA3A-4E19-81D6-56438ABAA80E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
