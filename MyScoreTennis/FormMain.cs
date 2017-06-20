@@ -14,6 +14,7 @@ namespace MyScoreTennis
 {
     public partial class FormMain : Form
     {
+        ulong CountStarted = 0;
         WebBrowser webBrowser = new WebBrowser();
         public FormMain()
         {
@@ -21,25 +22,7 @@ namespace MyScoreTennis
             webBrowser.ObjectForScripting = true;
             SetFeatureBrowserEmulation();
             InitializeComponent();
-        }
-
-        async private void buttonParserScore_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                var cts = new CancellationTokenSource(10000); // cancel in 10s
-                var html = await LoadDynamicPage("http://www.myscore.ru/tennis/", cts.Token);
-                //MessageBox.Show(html.Substring(0, 1024) + "..."); // it's too long!
-                this.textBox1.Text = html;
-                MyScoreTennisEntity.Helper.Core.ParserScore(html);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message);
-            }
-        }
-
-        
+        }      
 
         // navigate and download 
         async Task<string> LoadDynamicPage(string url, CancellationToken token)
@@ -102,7 +85,57 @@ namespace MyScoreTennis
 
         private void FormMain_Load(object sender, EventArgs e)
         {
+            this.label2.Text = "";
             Entity.Common.NHibernateHelper.UpdateSchema();
+            this.buttonStop.Enabled = false;
+        }
+
+        async private void timer1_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                this.timer1.Stop();
+                this.CountStarted++;
+                this.label2.Text = this.CountStarted.ToString();
+
+                var cts = new CancellationTokenSource(10000); // cancel in 10s
+                var html = await LoadDynamicPage("http://www.myscore.ru/tennis/", cts.Token);
+
+                this.textBox1.Text = html;
+                MyScoreTennisEntity.Helper.Core.ParserScore(html);
+
+                foreach(var match in MyScoreTennisEntity.Models.Match.GetAllByStatus(1))
+                {
+                    var ctsMatch = new CancellationTokenSource(10000); // cancel in 10s
+                    string urlMatch = String.Format("{0}", match.Number);
+                    var htmlMatch = await LoadDynamicPage(urlMatch, ctsMatch.Token);
+
+                    MyScoreTennisEntity.Helper.Core.ParserScoreMatch(htmlMatch);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                this.textBox1.Text = ex.Message;
+            }
+            finally
+            {
+                this.timer1.Start();
+            }
+        }
+
+        private void buttonStop_Click(object sender, EventArgs e)
+        {
+            this.timer1.Stop();
+            this.buttonStop.Enabled = false;
+            this.buttonStart.Enabled = true;
+        }
+
+        private void buttonStart_Click(object sender, EventArgs e)
+        {
+            this.timer1.Start();
+            this.buttonStop.Enabled = true;
+            this.buttonStart.Enabled = false;
         }
 
     }

@@ -10,6 +10,7 @@
     <property name="updated_at" />
 
     <property name="Number"/>
+    <property name="Status"/>
 
     
   </class>

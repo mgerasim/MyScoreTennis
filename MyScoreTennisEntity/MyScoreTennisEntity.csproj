@@ -79,12 +79,16 @@
     <Compile Include="Common\BaseRepository.cs" />
     <Compile Include="Common\NHibernateHelper.cs" />
     <Compile Include="Helper\Core.cs" />
-    <Compile Include="Models\Macht.cs" />
+    <Compile Include="Models\Match.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="hibernate.cfg.xml" />
-    <Content Include="Mapping\Macht.hbm.xml" />
+    <EmbeddedResource Include="hibernate.cfg.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Mapping\Match.hbm.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
