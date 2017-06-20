@@ -21,21 +21,9 @@ namespace MyScoreTennis
             webBrowser.ObjectForScripting = true;
             SetFeatureBrowserEmulation();
             InitializeComponent();
-            this.Load += MainForm_Load;
         }
 
-        private void buttonParserScore_Click(object sender, EventArgs e)
-        {
-            //WebBrowser wb = new WebBrowser();
-            //wb.ScrollBarsEnabled = false;
-            //wb.ScriptErrorsSuppressed = true;
-            //wb.Navigate("http://www.myscore.ru/tennis/");
-            //while (wb.ReadyState != WebBrowserReadyState.Complete) { Application.DoEvents(); }
-            //string ss = wb.Document.DomDocument.ToString();
-        }
-
-        // start the task
-        async void MainForm_Load(object sender, EventArgs e)
+        async private void buttonParserScore_Click(object sender, EventArgs e)
         {
             try
             {
@@ -50,6 +38,8 @@ namespace MyScoreTennis
                 MessageBox.Show(ex.Message);
             }
         }
+
+        
 
         // navigate and download 
         async Task<string> LoadDynamicPage(string url, CancellationToken token)
@@ -108,6 +98,11 @@ namespace MyScoreTennis
             var appName = System.IO.Path.GetFileName(System.Diagnostics.Process.GetCurrentProcess().MainModule.FileName);
             Registry.SetValue(@"HKEY_CURRENT_USER\Software\Microsoft\Internet Explorer\Main\FeatureControl\FEATURE_BROWSER_EMULATION",
                 appName, 10000, RegistryValueKind.DWord);
+        }
+
+        private void FormMain_Load(object sender, EventArgs e)
+        {
+            Entity.Common.NHibernateHelper.UpdateSchema();
         }
 
     }
