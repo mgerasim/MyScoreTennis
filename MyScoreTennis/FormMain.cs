@@ -107,7 +107,7 @@ namespace MyScoreTennis
                 foreach(var match in MyScoreTennisEntity.Models.Match.GetAllByStatus(1))
                 {
                     var ctsMatch = new CancellationTokenSource(10000); // cancel in 10s
-                    string urlMatch = String.Format("{0}", match.Number);
+                    string urlMatch = String.Format("http://www.myscore.ru/match/{0}/#point-by-point;1", match.Number);
                     var htmlMatch = await LoadDynamicPage(urlMatch, ctsMatch.Token);
 
                     MyScoreTennisEntity.Helper.Core.ParserScoreMatch(htmlMatch);

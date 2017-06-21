@@ -40,30 +40,33 @@ namespace MyScoreTennisEntity.Helper
                 string ss = item.Attributes["id"].Value.Split(new char[] { '_' }, StringSplitOptions.RemoveEmptyEntries)[2];
                 res += ss + ",";
 
-                String urlAddress = String.Format("http://www.myscore.ru/match/{0}/#point-by-point;1", ss);
 
-                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlAddress);
-                HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+                    
+                
+                //String urlAddress = String.Format("http://www.myscore.ru/match/{0}/#point-by-point;1", ss);
 
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    Stream receiveStream = response.GetResponseStream();
-                    StreamReader readStream = null;
+                //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlAddress);
+                //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
 
-                    if (response.CharacterSet == null)
-                    {
-                        readStream = new StreamReader(receiveStream);
-                    }
-                    else
-                    {
-                        readStream = new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
-                    }
+                //if (response.StatusCode == HttpStatusCode.OK)
+                //{
+                //    Stream receiveStream = response.GetResponseStream();
+                //    StreamReader readStream = null;
 
-                    string data = readStream.ReadToEnd();
+                //    if (response.CharacterSet == null)
+                //    {
+                //        readStream = new StreamReader(receiveStream);
+                //    }
+                //    else
+                //    {
+                //        readStream = new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
+                //    }
 
-                    response.Close();
-                    readStream.Close();
-                }
+                //    string data = readStream.ReadToEnd();
+
+                //    response.Close();
+                //    readStream.Close();
+                //}
 
 
                 //var NextChild = item.Ne
@@ -100,30 +103,43 @@ namespace MyScoreTennisEntity.Helper
                     string ss = item.Attributes["id"].Value.Split(new char[] { '_' }, StringSplitOptions.RemoveEmptyEntries)[2];
                     res += ss + ",";
 
-                    String urlAddress = String.Format("http://www.myscore.ru/match/{0}/#point-by-point;1", ss);
+                    MyScoreTennisEntity.Models.Match theMatch = Models.Match.GetByNumber(ss);
 
-                    HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlAddress);
-                    HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-                    if (response.StatusCode == HttpStatusCode.OK)
+                    if (theMatch == null)
                     {
-                        Stream receiveStream = response.GetResponseStream();
-                        StreamReader readStream = null;
+                        theMatch = new Models.Match();
+                        
+                        theMatch.Number = ss;
+                        theMatch.Status = 1;
 
-                        if (response.CharacterSet == null)
-                        {
-                            readStream = new StreamReader(receiveStream);
-                        }
-                        else
-                        {
-                            readStream = new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
-                        }
-
-                        string data = readStream.ReadToEnd();
-
-                        response.Close();
-                        readStream.Close();
+                        theMatch.Save();
                     }
+
+
+                    //String urlAddress = String.Format("http://www.myscore.ru/match/{0}/#point-by-point;1", ss);
+
+                    //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlAddress);
+                    //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
+
+                    //if (response.StatusCode == HttpStatusCode.OK)
+                    //{
+                    //    Stream receiveStream = response.GetResponseStream();
+                    //    StreamReader readStream = null;
+
+                    //    if (response.CharacterSet == null)
+                    //    {
+                    //        readStream = new StreamReader(receiveStream);
+                    //    }
+                    //    else
+                    //    {
+                    //        readStream = new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
+                    //    }
+
+                    //    string data = readStream.ReadToEnd();
+
+                    //    response.Close();
+                    //    readStream.Close();
+                    //}
 
 
                     //var NextChild = item.Ne

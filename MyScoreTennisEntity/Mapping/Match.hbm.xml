@@ -9,8 +9,8 @@
     <property name="created_at" update="false"/>
     <property name="updated_at" />
 
-    <property name="Number"/>
-    <property name="Status"/>
+    <property name="Number" unique="true" not-null="true" />
+    <property name="Status" not-null="true"/>
 
     
   </class>

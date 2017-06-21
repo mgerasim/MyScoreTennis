@@ -32,5 +32,17 @@ namespace MyScoreTennisEntity.Models
             }
         }
 
+        public static Match GetByNumber(string Number)
+        {
+            using (ISession session = NHibernateHelper.OpenSession())
+            {
+                var result = session.CreateCriteria(typeof(Match))
+                    .Add(Restrictions.Eq("Number", Number))
+                    .UniqueResult<Match>();
+
+                return result;
+            }
+        }
+
     }
 }
