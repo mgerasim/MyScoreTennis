@@ -1,4 +1,5 @@
 ﻿using Microsoft.Win32;
+using MyScoreTennisEntity.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -107,10 +108,34 @@ namespace MyScoreTennis
                 foreach(var match in MyScoreTennisEntity.Models.Match.GetAllByStatus(1))
                 {
                     var ctsMatch = new CancellationTokenSource(10000); // cancel in 10s
-                    string urlMatch = String.Format("http://www.myscore.ru/match/{0}/#point-by-point;1", match.Number);
-                    var htmlMatch = await LoadDynamicPage(urlMatch, ctsMatch.Token);
 
-                    MyScoreTennisEntity.Helper.Core.ParserScoreMatch(htmlMatch);
+
+                    string urlMatch = String.Format("http://www.myscore.ru/match/{0}/#point-by-point;3", match.Number);
+                    var htmlMatch = await LoadDynamicPage(urlMatch, ctsMatch.Token);
+                    Sethistory theSet1 = new Sethistory();
+                    theSet1.Match = match;
+                    theSet1.NumberOrder = 1;
+                    theSet1.Save();                    
+                    MyScoreTennisEntity.Helper.Core.ParserScoreMatch(htmlMatch, theSet1);
+
+                    urlMatch = String.Format("http://www.myscore.ru/match/{0}/#point-by-point;2", match.Number);
+                    htmlMatch = await LoadDynamicPage(urlMatch, ctsMatch.Token);
+                    theSet1 = new Sethistory();
+                    theSet1.Match = match;
+                    theSet1.NumberOrder = 2;
+                    theSet1.Save();
+                    MyScoreTennisEntity.Helper.Core.ParserScoreMatch(htmlMatch, theSet1);
+
+                    urlMatch = String.Format("http://www.myscore.ru/match/{0}/#point-by-point;1", match.Number);
+                    htmlMatch = await LoadDynamicPage(urlMatch, ctsMatch.Token);
+                    theSet1 = new Sethistory();
+                    theSet1.Match = match;
+                    theSet1.NumberOrder = 3;
+                    theSet1.Save();
+                    MyScoreTennisEntity.Helper.Core.ParserScoreMatch(htmlMatch, theSet1);
+
+                    match.Status = 2;
+                    match.Update();
                 }
 
             }

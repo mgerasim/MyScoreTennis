@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="MyScoreTennisEntity.Models" assembly="MyScoreTennisEntity">
+  <class name="Sethistory"  >
+    <id name="ID" unsaved-value="0">
+      <column name="ID" not-null="true" />
+      <generator class="identity" />
+    </id>
+    
+    <property name="created_at" update="false"/>
+    <property name="updated_at" />
+
+    <property name="NumberOrder" unique-key="NumberOrder" not-null="true" />
+
+    <many-to-one name="Match" not-null="true" unique-key="NumberOrder" column="Match_ID" />
+    
+  </class>
+</hibernate-mapping>

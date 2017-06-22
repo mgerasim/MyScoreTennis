@@ -44,5 +44,13 @@ namespace MyScoreTennisEntity.Models
             }
         }
 
+        public virtual List<Sethistory> Sets
+        {
+            get
+            {
+                return Sethistory.GetAllByMatch(this);
+            }
+        }
+
     }
 }

@@ -1,0 +1,20 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<hibernate-mapping xmlns="urn:nhibernate-mapping-2.2" namespace="MyScoreTennisEntity.Models" assembly="MyScoreTennisEntity">
+  <class name="Score"  >
+    <id name="ID" unsaved-value="0">
+      <column name="ID" not-null="true" />
+      <generator class="identity" />
+    </id>
+    
+    <property name="created_at" update="false"/>
+    <property name="updated_at" />
+
+    <property name="Highlight" not-null="true"/>
+    <property name="HighlightLeft" not-null="true"/>
+    <property name="HighlightRight" not-null="true"/>
+    <property name="Fifteens" not-null="true"/>
+    <many-to-one name="Set" not-null="true" column="Set_ID" />
+
+
+  </class>
+</hibernate-mapping>
