@@ -30,13 +30,15 @@ namespace MyScoreTennisEntity.Models
 
         static public List<Score> GetAllBySet(Sethistory theSet)
         {
-            using (ISession session = NHibernateHelper.OpenSession())
+            ISession session = theSet.session;
+            if (session == null)
             {
-                ICriteria criteria = session.CreateCriteria(typeof(Score));
-                criteria.Add(Restrictions.Eq("Score", theSet));
-                criteria.AddOrder(Order.Asc("ID"));
-                return criteria.List<Score>().ToList<Score>();
+                session = NHibernateHelper.OpenSession();
             }
+            ICriteria criteria = session.CreateCriteria(typeof(Score));
+            criteria.Add(Restrictions.Eq("Set", theSet));
+            criteria.AddOrder(Order.Asc("ID"));
+            return criteria.List<Score>().ToList<Score>();            
         }
         
         

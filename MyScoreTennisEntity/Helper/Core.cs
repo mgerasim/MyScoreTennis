@@ -51,6 +51,7 @@ namespace MyScoreTennisEntity.Helper
 
                 if (tagHighlightRight.HasAttributes) 
                 {
+
                     if (tagHighlightRight.Attributes["class"].Value == "score-highlight")
                     {
                         Highlight = 2;
@@ -63,13 +64,18 @@ namespace MyScoreTennisEntity.Helper
                 }
                                 
                 Score theScore = new Score();
+                theScore.session = theSet.session;
                 theScore.HighlightLeft = Convert.ToInt32(HighlightLeft);
                 theScore.HighlightRight = Convert.ToInt32(HighlightRight);
                 theScore.Highlight = Highlight;
                 theScore.Set = theSet;
+                theScore.Fifteens = tagTBody.ChildNodes[i+1].InnerText;
 
                 theScore.Save();
                 i++;
+
+                
+                
             }
 
                 return res;
@@ -118,35 +124,6 @@ namespace MyScoreTennisEntity.Helper
 
                         theMatch.Save();
                     }
-
-
-                    //String urlAddress = String.Format("http://www.myscore.ru/match/{0}/#point-by-point;1", ss);
-
-                    //HttpWebRequest request = (HttpWebRequest)WebRequest.Create(urlAddress);
-                    //HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-
-                    //if (response.StatusCode == HttpStatusCode.OK)
-                    //{
-                    //    Stream receiveStream = response.GetResponseStream();
-                    //    StreamReader readStream = null;
-
-                    //    if (response.CharacterSet == null)
-                    //    {
-                    //        readStream = new StreamReader(receiveStream);
-                    //    }
-                    //    else
-                    //    {
-                    //        readStream = new StreamReader(receiveStream, Encoding.GetEncoding(response.CharacterSet));
-                    //    }
-
-                    //    string data = readStream.ReadToEnd();
-
-                    //    response.Close();
-                    //    readStream.Close();
-                    //}
-
-
-                    //var NextChild = item.Ne
                 }
 
                 string matchesAllHtml = tagTBody.ChildNodes[0].InnerHtml;

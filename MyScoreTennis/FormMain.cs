@@ -1,5 +1,6 @@
 ﻿using Microsoft.Win32;
 using MyScoreTennisEntity.Models;
+using NHibernate;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -16,7 +17,9 @@ namespace MyScoreTennis
     public partial class FormMain : Form
     {
         ulong CountStarted = 0;
-        WebBrowser webBrowser = new WebBrowser();
+         WebBrowser webBrowser = new WebBrowser();
+            
+        
         public FormMain()
         {
             webBrowser.ScriptErrorsSuppressed = true;
@@ -33,22 +36,27 @@ namespace MyScoreTennis
             WebBrowserDocumentCompletedEventHandler handler = (s, arg) =>
                 tcs.TrySetResult(true);
 
+            WebBrowser webBrowser = new WebBrowser();
+            webBrowser.ScriptErrorsSuppressed = true;
+            webBrowser.ObjectForScripting = true;
+            SetFeatureBrowserEmulation();
+
             using (token.Register(() => tcs.TrySetCanceled(), useSynchronizationContext: true))
             {
-                this.webBrowser.DocumentCompleted += handler;
+                webBrowser.DocumentCompleted += handler;
                 try
                 {
-                    this.webBrowser.Navigate(url);
+                    webBrowser.Navigate(url);
                     await tcs.Task; // wait for DocumentCompleted
                 }
                 finally
                 {
-                    this.webBrowser.DocumentCompleted -= handler;
+                    webBrowser.DocumentCompleted -= handler;
                 }
             }
 
             // get the root element
-            var documentElement = this.webBrowser.Document.GetElementsByTagName("html")[0];
+            var documentElement = webBrowser.Document.GetElementsByTagName("html")[0];
 
             // poll the current HTML for changes asynchronosly
             var html = documentElement.OuterHtml;
@@ -58,7 +66,7 @@ namespace MyScoreTennis
                 await Task.Delay(500, token);
 
                 // continue polling if the WebBrowser is still busy
-                if (this.webBrowser.IsBusy)
+                if (webBrowser.IsBusy)
                     continue;
 
                 var htmlNow = documentElement.OuterHtml;
@@ -94,7 +102,7 @@ namespace MyScoreTennis
         async private void timer1_Tick(object sender, EventArgs e)
         {
             try
-            {
+            {                
                 this.timer1.Stop();
                 this.CountStarted++;
                 this.label2.Text = this.CountStarted.ToString();
@@ -105,37 +113,87 @@ namespace MyScoreTennis
                 this.textBox1.Text = html;
                 MyScoreTennisEntity.Helper.Core.ParserScore(html);
 
-                foreach(var match in MyScoreTennisEntity.Models.Match.GetAllByStatus(1))
+                webBrowser.Dispose();
+
+                //foreach (var match in MyScoreTennisEntity.Models.Match.GetAllByStatus(1))
+                //{
+                //    ISession session = Entity.Common.NHibernateHelper.OpenSession();
+                //    var transaction = session.BeginTransaction();
+
+                //    try
+                //    {
+
+                //        match.session = session;
+
+                //        var ctsMatch = new CancellationTokenSource(10000); // cancel in 10s
+
+
+                //        string urlMatch = String.Format("http://www.myscore.ru/match/{0}/#point-by-point;3", match.Number);
+                //        var htmlMatch = await LoadDynamicPage(urlMatch, ctsMatch.Token);
+                //        Sethistory theSet1 = new Sethistory();
+                //        theSet1.session = session;
+
+                //        theSet1.Match = match;
+                //        theSet1.NumberOrder = 1;
+                //        theSet1.Save();
+                //        MyScoreTennisEntity.Helper.Core.ParserScoreMatch(htmlMatch, theSet1);
+
+                //        webBrowser.Dispose();
+
+                //        urlMatch = String.Format("http://www.myscore.ru/match/{0}/#point-by-point;2", match.Number);
+                //        htmlMatch = await LoadDynamicPage(urlMatch, ctsMatch.Token);
+                //        theSet1 = new Sethistory();
+                //        theSet1.session = session;
+
+                //        theSet1.Match = match;
+                //        theSet1.NumberOrder = 2;
+                //        theSet1.Save();
+                //        MyScoreTennisEntity.Helper.Core.ParserScoreMatch(htmlMatch, theSet1);
+
+                //        webBrowser.Dispose();
+
+                //        urlMatch = String.Format("http://www.myscore.ru/match/{0}/#point-by-point;1", match.Number);
+                //        htmlMatch = await LoadDynamicPage(urlMatch, ctsMatch.Token);
+                //        theSet1 = new Sethistory();
+                //        theSet1.session = session;
+
+                //        theSet1.Match = match;
+                //        theSet1.NumberOrder = 3;
+                //        theSet1.Save();
+                //        MyScoreTennisEntity.Helper.Core.ParserScoreMatch(htmlMatch, theSet1);
+
+                //        webBrowser.Dispose();
+
+                //        match.Status = 2;
+                //        match.Update();
+
+
+                //        transaction.Commit();
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        transaction.Rollback();
+                //        webBrowser.Dispose();
+                //    }
+
+                //}
+                foreach (var match in MyScoreTennisEntity.Models.Match.GetAllByStatus(2))
                 {
-                    var ctsMatch = new CancellationTokenSource(10000); // cancel in 10s
+                    ISession session = Entity.Common.NHibernateHelper.OpenSession();
+                    var transaction = session.BeginTransaction();
+                    try
+                    {
+                        match.session = session;
 
+                        match.Analizy();
 
-                    string urlMatch = String.Format("http://www.myscore.ru/match/{0}/#point-by-point;3", match.Number);
-                    var htmlMatch = await LoadDynamicPage(urlMatch, ctsMatch.Token);
-                    Sethistory theSet1 = new Sethistory();
-                    theSet1.Match = match;
-                    theSet1.NumberOrder = 1;
-                    theSet1.Save();                    
-                    MyScoreTennisEntity.Helper.Core.ParserScoreMatch(htmlMatch, theSet1);
-
-                    urlMatch = String.Format("http://www.myscore.ru/match/{0}/#point-by-point;2", match.Number);
-                    htmlMatch = await LoadDynamicPage(urlMatch, ctsMatch.Token);
-                    theSet1 = new Sethistory();
-                    theSet1.Match = match;
-                    theSet1.NumberOrder = 2;
-                    theSet1.Save();
-                    MyScoreTennisEntity.Helper.Core.ParserScoreMatch(htmlMatch, theSet1);
-
-                    urlMatch = String.Format("http://www.myscore.ru/match/{0}/#point-by-point;1", match.Number);
-                    htmlMatch = await LoadDynamicPage(urlMatch, ctsMatch.Token);
-                    theSet1 = new Sethistory();
-                    theSet1.Match = match;
-                    theSet1.NumberOrder = 3;
-                    theSet1.Save();
-                    MyScoreTennisEntity.Helper.Core.ParserScoreMatch(htmlMatch, theSet1);
-
-                    match.Status = 2;
-                    match.Update();
+                        transaction.Commit();
+                    }
+                    catch (Exception ex)
+                    {
+                        this.textBox1.Text = ex.Message;
+                        transaction.Rollback();
+                    }
                 }
 
             }

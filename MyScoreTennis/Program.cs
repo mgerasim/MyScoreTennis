@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace MyScoreTennis
 {
-    static class Program
+    class Program
     {
         /// <summary>
         /// The main entry point for the application.

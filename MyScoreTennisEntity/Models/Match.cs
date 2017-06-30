@@ -20,28 +20,32 @@ namespace MyScoreTennisEntity.Models
             Status = 1;
         }
 
-        public static List<Match> GetAllByStatus(int Status)
+        public static List<Match> GetAllByStatus(int Status, ISession sess = null)
         {
-            using (ISession session = NHibernateHelper.OpenSession())
+            ISession session = sess;
+            if (session == null)
             {
-                var result = session.CreateCriteria(typeof(Match))
-                        .Add(Restrictions.Eq("Status", Status))
-                        .List<Match>().ToList<Match>();
+                session = NHibernateHelper.OpenSession();
+            }            
+            var result = session.CreateCriteria(typeof(Match))
+                    .Add(Restrictions.Eq("Status", Status))
+                    .List<Match>().ToList<Match>();
 
-                return result;
-            }
+            return result;            
         }
 
-        public static Match GetByNumber(string Number)
+        public static Match GetByNumber(string Number, ISession sess = null)
         {
-            using (ISession session = NHibernateHelper.OpenSession())
+            ISession session = sess;
+            if (session == null)
             {
-                var result = session.CreateCriteria(typeof(Match))
-                    .Add(Restrictions.Eq("Number", Number))
-                    .UniqueResult<Match>();
-
-                return result;
+                session = NHibernateHelper.OpenSession();
             }
+            var result = session.CreateCriteria(typeof(Match))
+                .Add(Restrictions.Eq("Number", Number))
+                .UniqueResult<Match>();
+
+            return result;           
         }
 
         public virtual List<Sethistory> Sets
@@ -50,6 +54,41 @@ namespace MyScoreTennisEntity.Models
             {
                 return Sethistory.GetAllByMatch(this);
             }
+        }
+
+        public virtual bool Analizy()
+        {
+            try
+            {
+                var SethistoryWhere = this.Sets.Where(x => x.NumberOrder == 1);
+                if (SethistoryWhere == null || SethistoryWhere.Count() == 0)
+                {
+                    this.Status = 3;
+                    this.Update();
+                    return false;
+                }
+
+                var SethistoryItem = SethistoryWhere.Single();
+
+                var ScoreWhere = SethistoryItem.Scores.Where(x => x.HighlightLeft == 6 && (x.HighlightRight == 3 || x.HighlightRight == 4));
+
+                if (ScoreWhere == null || ScoreWhere.Count() == 0)
+                {
+                    this.Status = 3;
+                    this.Update();
+                    return false;
+                }
+
+                this.Status = 4;
+                this.Update();
+                return true;
+            }
+            catch (Exception ex)
+            {
+                string err = ex.Message;
+            }
+
+            return false;
         }
 
     }

@@ -19,16 +19,19 @@ namespace MyScoreTennisEntity.Models
             NumberOrder = 1;
         }
         
-        public static Sethistory GetByNumber(int NumberOrder)
+        public static Sethistory GetByNumber(int NumberOrder, ISession sess = null)
         {
-            using (ISession session = NHibernateHelper.OpenSession())
+            ISession session = sess;
+            if (session == null)
             {
-                var result = session.CreateCriteria(typeof(Sethistory))
-                    .Add(Restrictions.Eq("NumberOrder", NumberOrder))
-                    .UniqueResult<Sethistory>();
-
-                return result;
+                session = NHibernateHelper.OpenSession();
             }
+            var result = session.CreateCriteria(typeof(Sethistory))
+                .Add(Restrictions.Eq("NumberOrder", NumberOrder))
+                .UniqueResult<Sethistory>();
+
+            return result;
+            
         }
 
         static public List<Sethistory> GetAllByMatch(Match theMatch)
